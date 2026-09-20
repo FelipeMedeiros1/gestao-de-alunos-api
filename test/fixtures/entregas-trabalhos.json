@@ -1,0 +1,40 @@
+[
+  {
+    "tituloTeste": "aluno deve entregar um trabalho de programação",
+    "aluno": {
+      "nome": "Aluno Teste Programação",
+      "email": "aluno.programacao.001@example.com",
+      "matricula": "TESTE-001",
+      "senha": "123456"
+    },
+    "disciplina": {
+      "nome": "Programação para Testes",
+      "codigo": "TST001",
+      "cargaHoraria": 60
+    },
+    "trabalho": {
+      "titulo": "Trabalho de API REST",
+      "descricao": "Implementação de testes automatizados"
+    },
+    "statusEsperado": 201
+  },
+  {
+    "tituloTeste": "aluno deve entregar um trabalho de qualidade",
+    "aluno": {
+      "nome": "Aluno Teste Qualidade",
+      "email": "aluno.qualidade.002@example.com",
+      "matricula": "TESTE-002",
+      "senha": "123456"
+    },
+    "disciplina": {
+      "nome": "Qualidade de Software para Testes",
+      "codigo": "TST002",
+      "cargaHoraria": 40
+    },
+    "trabalho": {
+      "titulo": "Plano de testes",
+      "descricao": "Criação de um plano de testes automatizados"
+    },
+    "statusEsperado": 201
+  }
+]

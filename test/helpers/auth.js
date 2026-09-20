@@ -1,29 +1,35 @@
+﻿import 'dotenv/config';
 import { api } from './api.js';
-import 'dotenv/config';
 
-let tokenEmCache = null
-export async function comTokenDeAdmin() {
-    if (!tokenEmCache) {
-        const loginResposta = await api()
-            .post('/api/auth/login')
-            .set('Content-Type', 'application/json')
-            .send({ 
-                    email: process.env.ADMIN_EMAIL, 
-                    senha: process.env.ADMIN_SENHA
-            });
+export async function loginComoAdmin() {
+  const resposta = await api()
+    .post('/api/auth/login')
+    .send({
+      email: process.env.ADMIN_EMAIL,
+      senha: process.env.ADMIN_SENHA
+    });
 
-        tokenEmCache = loginResposta.body.token;
-    }
-    return `Bearer ${tokenEmCache}`;
+  if (resposta.status !== 200 || !resposta.body.token) {
+    throw new Error(`Falha no login do administrador: status ${resposta.status}`);
+  }
+
+  return resposta.body.token;
 }
 
-export async function getToken(emailUser, passUser) {
-    const loginResposta = await api()
-        .post('/api/auth/login')
-        .set('Content-Type', 'application/json')
-        .send({ 
-            email: emailUser, 
-            senha: passUser
-        });
-    return loginResposta.body.token;
+export async function loginComoAluno(email, senha) {
+  const resposta = await api()
+    .post('/api/auth/login')
+    .send({ email, senha });
+
+  if (resposta.status !== 200 || !resposta.body.token) {
+    throw new Error(`Falha no login do aluno: status ${resposta.status}`);
+  }
+
+  return resposta.body.token;
+}
+
+export const getToken = loginComoAluno;
+
+export async function comTokenDeAdmin() {
+  return `Bearer ${await loginComoAdmin()}`;
 }
