@@ -1,0 +1,47 @@
+name: Testes automatizados
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Iniciar API e executar testes
+        env:
+          BASE_URL: http://localhost:3000
+          ADMIN_EMAIL: admin@escola.com
+          ADMIN_SENHA: admin123
+          JWT_SECRET: segredo-exclusivo-da-pipeline
+          PORT: 3000
+        run: |
+          npm start > api.log 2>&1 &
+          API_PID=$!
+          trap 'kill $API_PID 2>/dev/null || true' EXIT
+
+          for tentativa in {1..20}; do
+            if curl --fail --silent http://localhost:3000/ > /dev/null; then
+              npm test
+              exit $?
+            fi
+            sleep 1
+          done
+
+          echo "A API nao iniciou dentro do tempo esperado."
+          cat api.log
+          exit 1
